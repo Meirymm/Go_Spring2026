@@ -16,15 +16,19 @@ import (
 func Run() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("Warning: .env file not found, using environment variables")
+	} else {
+		log.Println(".env file loaded successfully!")
 	}
-	log.Println(".env file loaded successfully!")
+	
 	dbConfig := initPostgreConfig()
 	db := _postgres.NewPGXDialect(dbConfig)
 	log.Println("Successfully connected to database!")
+	
 	repos := repository.NewRepositories(db)
 	userUsecase := usecase.NewUserUsecase(repos.UserRepository)
 	userHandler := handlers.NewUserHandler(userUsecase)
+	
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", userHandler.HealthCheck)
 	mux.HandleFunc("/users", handlers.Chain(
@@ -37,11 +41,13 @@ func Run() {
 		handlers.AuthMiddleware,
 		handlers.LoggingMiddleware,
 	))
+	
 	log.Println("Server starting on :8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
 		log.Fatal(err)
 	}
 }
+
 func initPostgreConfig() *modules.PostgreConfig {
 	return &modules.PostgreConfig{
 		Host:        os.Getenv("DB_HOST"),
