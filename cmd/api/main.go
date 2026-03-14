@@ -1,6 +1,6 @@
 package main
 
-import "assignment2/internal/app"
+import "assignment4/internal/app"
 
 func main() {
 	app.Run()

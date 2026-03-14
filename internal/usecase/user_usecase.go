@@ -1,8 +1,9 @@
 package usecase
 
 import (
-	"assignment2/internal/repository"
-	"assignment2/pkg/modules"
+	"assignment4/internal/repository"
+	"assignment4/pkg/modules"
+	"time"
 )
 
 type UserUsecase struct {
@@ -21,14 +22,27 @@ func (u *UserUsecase) GetUserByID(id int) (*modules.User, error) {
 	return u.repo.GetUserByID(id)
 }
 
-func (u *UserUsecase) CreateUser(name, email string, age int) (int, error) {
-	return u.repo.CreateUser(name, email, age)
+func (u *UserUsecase) CreateUser(name, email, gender string, age int, birthDate time.Time) (int, error) {
+	return u.repo.CreateUser(name, email, gender, age, birthDate)
 }
 
-func (u *UserUsecase) UpdateUser(id int, name, email string, age int) (int, error) {
-	return u.repo.UpdateUser(id, name, email, age)
+func (u *UserUsecase) UpdateUser(id int, name, email, gender string, age int, birthDate time.Time) (int, error) {
+	return u.repo.UpdateUser(id, name, email, gender, age, birthDate)
 }
 
 func (u *UserUsecase) DeleteUser(id int) (int, error) {
 	return u.repo.DeleteUser(id)
+}
+
+// Новые методы
+func (u *UserUsecase) GetPaginatedUsers(page, pageSize int, filters map[string]interface{}, orderBy string) (*modules.PaginatedResponse, error) {
+	return u.repo.GetPaginatedUsers(page, pageSize, filters, orderBy)
+}
+
+func (u *UserUsecase) GetCommonFriends(userID1, userID2 int) ([]modules.User, error) {
+	return u.repo.GetCommonFriends(userID1, userID2)
+}
+
+func (u *UserUsecase) AddFriend(userID, friendID int) error {
+	return u.repo.AddFriend(userID, friendID)
 }

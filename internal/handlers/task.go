@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"assignment2/internal/models"
+	"assignment4/internal/models"
 	"encoding/json"
 	"net/http"
 	"strconv"

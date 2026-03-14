@@ -1,7 +1,7 @@
 package _postgres
 
 import (
-	"assignment2/pkg/modules"
+	"assignment4/pkg/modules"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/jmoiron/sqlx"

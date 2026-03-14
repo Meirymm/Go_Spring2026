@@ -1,11 +1,11 @@
 package app
 
 import (
-	"assignment2/internal/handlers"
-	"assignment2/internal/repository"
-	"assignment2/internal/repository/_postgres"
-	"assignment2/internal/usecase"
-	"assignment2/pkg/modules"
+	"assignment4/internal/handlers"
+	"assignment4/internal/repository"
+	"assignment4/internal/repository/_postgres"
+	"assignment4/internal/usecase"
+	"assignment4/pkg/modules"
 	"github.com/joho/godotenv"
 	"log"
 	"net/http"
@@ -28,16 +28,39 @@ func Run() {
 	repos := repository.NewRepositories(db)
 	userUsecase := usecase.NewUserUsecase(repos.UserRepository)
 	userHandler := handlers.NewUserHandler(userUsecase)
+	paginationHandler := handlers.NewPaginationHandler(userUsecase)
 	
 	mux := http.NewServeMux()
+	
 	mux.HandleFunc("/health", userHandler.HealthCheck)
+	
 	mux.HandleFunc("/users", handlers.Chain(
 		userHandler.HandleUsers,
 		handlers.AuthMiddleware,
 		handlers.LoggingMiddleware,
 	))
+	
 	mux.HandleFunc("/users/id", handlers.Chain(
 		userHandler.HandleUserByID,
+		handlers.AuthMiddleware,
+		handlers.LoggingMiddleware,
+	))
+	
+	// Новые endpoints
+	mux.HandleFunc("/users/paginated", handlers.Chain(
+		paginationHandler.GetPaginatedUsers,
+		handlers.AuthMiddleware,
+		handlers.LoggingMiddleware,
+	))
+	
+	mux.HandleFunc("/users/common-friends", handlers.Chain(
+		paginationHandler.GetCommonFriends,
+		handlers.AuthMiddleware,
+		handlers.LoggingMiddleware,
+	))
+	
+	mux.HandleFunc("/users/add-friend", handlers.Chain(
+		paginationHandler.AddFriend,
 		handlers.AuthMiddleware,
 		handlers.LoggingMiddleware,
 	))
