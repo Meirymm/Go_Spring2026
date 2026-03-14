@@ -11,19 +11,16 @@ import (
 type UserHandler struct {
 	usecase *usecase.UserUsecase
 }
-
 func NewUserHandler(uc *usecase.UserUsecase) *UserHandler {
 	return &UserHandler{usecase: uc}
 }
-
-// CreateUser - POST /users
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Name      string `json:"name"`
 		Email     string `json:"email"`
 		Age       int    `json:"age"`
 		Gender    string `json:"gender"`
-		BirthDate string `json:"birth_date"` // формат: "2000-01-15"
+		BirthDate string `json:"birth_date"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -49,8 +46,6 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "age must be positive"})
 		return
 	}
-
-	// Парсим дату
 	birthDate, err := time.Parse("2006-01-02", req.BirthDate)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -68,8 +63,6 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]int{"id": id})
 }
-
-// UpdateUser - PUT /users/id?id=X
 func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	idStr := r.URL.Query().Get("id")
 	if idStr == "" {

@@ -88,8 +88,6 @@ func (r *Repository) DeleteUser(id int) (int, error) {
 	}
 	return int(rowsAffected), nil
 }
-
-// GetPaginatedUsers - пагинация + фильтрация + сортировка
 func (r *Repository) GetPaginatedUsers(page, pageSize int, filters map[string]interface{}, orderBy string) (*modules.PaginatedResponse, error) {
 	if page < 1 {
 		page = 1
@@ -104,32 +102,24 @@ func (r *Repository) GetPaginatedUsers(page, pageSize int, filters map[string]in
 	countQuery := "SELECT COUNT(*) FROM users WHERE 1=1"
 	args := []interface{}{}
 	argIndex := 1
-	
-	// Фильтрация по имени
 	if name, ok := filters["name"]; ok && name != "" {
 		query += fmt.Sprintf(" AND name ILIKE $%d", argIndex)
 		countQuery += fmt.Sprintf(" AND name ILIKE $%d", argIndex)
 		args = append(args, "%"+name.(string)+"%")
 		argIndex++
 	}
-	
-	// Фильтрация по email
 	if email, ok := filters["email"]; ok && email != "" {
 		query += fmt.Sprintf(" AND email ILIKE $%d", argIndex)
 		countQuery += fmt.Sprintf(" AND email ILIKE $%d", argIndex)
 		args = append(args, "%"+email.(string)+"%")
 		argIndex++
 	}
-	
-	// Фильтрация по gender
 	if gender, ok := filters["gender"]; ok && gender != "" {
 		query += fmt.Sprintf(" AND gender = $%d", argIndex)
 		countQuery += fmt.Sprintf(" AND gender = $%d", argIndex)
 		args = append(args, gender)
 		argIndex++
 	}
-	
-	// Сортировка
 	if orderBy == "" {
 		orderBy = "id"
 	}
@@ -141,19 +131,13 @@ func (r *Repository) GetPaginatedUsers(page, pageSize int, filters map[string]in
 		orderBy = "id"
 	}
 	query += " ORDER BY " + orderBy
-	
-	// Пагинация
 	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argIndex, argIndex+1)
 	paginationArgs := append(args, pageSize, offset)
-	
-	// Получаем общее количество
 	var totalCount int
 	err := r.db.DB.Get(&totalCount, countQuery, args...)
 	if err != nil {
 		return nil, err
 	}
-	
-	// Получаем пользователей
 	var users []modules.User
 	err = r.db.DB.Select(&users, query, paginationArgs...)
 	if err != nil {
@@ -167,8 +151,6 @@ func (r *Repository) GetPaginatedUsers(page, pageSize int, filters map[string]in
 		PageSize:   pageSize,
 	}, nil
 }
-
-// GetCommonFriends - общие друзья двух пользователей
 func (r *Repository) GetCommonFriends(userID1, userID2 int) ([]modules.User, error) {
 	query := `
 		SELECT u.id, u.name, u.email, u.age, u.gender, u.birth_date, u.created_at
@@ -186,8 +168,6 @@ func (r *Repository) GetCommonFriends(userID1, userID2 int) ([]modules.User, err
 	
 	return users, nil
 }
-
-// AddFriend - добавить друга
 func (r *Repository) AddFriend(userID, friendID int) error {
 	if userID == friendID {
 		return errors.New("cannot add yourself as friend")

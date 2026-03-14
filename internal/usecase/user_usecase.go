@@ -33,8 +33,6 @@ func (u *UserUsecase) UpdateUser(id int, name, email, gender string, age int, bi
 func (u *UserUsecase) DeleteUser(id int) (int, error) {
 	return u.repo.DeleteUser(id)
 }
-
-// Новые методы
 func (u *UserUsecase) GetPaginatedUsers(page, pageSize int, filters map[string]interface{}, orderBy string) (*modules.PaginatedResponse, error) {
 	return u.repo.GetPaginatedUsers(page, pageSize, filters, orderBy)
 }

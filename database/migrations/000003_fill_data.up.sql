@@ -1,4 +1,3 @@
--- Добавляем тестовых пользователей (минимум 20)
 INSERT INTO users (name, email, age, gender, birth_date) VALUES
 ('Alice Johnson', 'alice@example.com', 25, 'female', '1999-03-15'),
 ('Bob Smith', 'bob@example.com', 30, 'male', '1994-07-22'),
@@ -20,7 +19,6 @@ INSERT INTO users (name, email, age, gender, birth_date) VALUES
 ('Rachel Lewis', 'rachel@example.com', 37, 'female', '1987-12-12'),
 ('Sam Walker', 'sam@example.com', 38, 'male', '1986-06-06');
 
--- Создаём таблицу друзей
 CREATE TABLE IF NOT EXISTS user_friends (
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     friend_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -28,8 +26,6 @@ CREATE TABLE IF NOT EXISTS user_friends (
     CHECK (user_id != friend_id)
 );
 
--- Добавляем связи друзей
--- Alice (id=2) и Bob (id=3) имеют общих друзей: Charlie (4), Diana (5), Eve (6)
 INSERT INTO user_friends (user_id, friend_id) VALUES
 (2, 4), (4, 2),
 (2, 5), (5, 2),

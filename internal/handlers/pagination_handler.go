@@ -10,27 +10,19 @@ import (
 type PaginationHandler struct {
 	usecase *usecase.UserUsecase
 }
-
 func NewPaginationHandler(uc *usecase.UserUsecase) *PaginationHandler {
 	return &PaginationHandler{usecase: uc}
 }
-
-// GetPaginatedUsers - GET /users/paginated?page=1&pageSize=10&name=alice&orderBy=name
 func (h *PaginationHandler) GetPaginatedUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	
-	// Получаем параметры пагинации
 	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
 	if page < 1 {
 		page = 1
 	}
-	
 	pageSize, _ := strconv.Atoi(r.URL.Query().Get("pageSize"))
 	if pageSize < 1 {
 		pageSize = 10
 	}
-	
-	// Фильтры
 	filters := make(map[string]interface{})
 	if name := r.URL.Query().Get("name"); name != "" {
 		filters["name"] = name
@@ -41,11 +33,7 @@ func (h *PaginationHandler) GetPaginatedUsers(w http.ResponseWriter, r *http.Req
 	if gender := r.URL.Query().Get("gender"); gender != "" {
 		filters["gender"] = gender
 	}
-	
-	// Сортировка
 	orderBy := r.URL.Query().Get("orderBy")
-	
-	// Получаем результат
 	result, err := h.usecase.GetPaginatedUsers(page, pageSize, filters, orderBy)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -57,7 +45,6 @@ func (h *PaginationHandler) GetPaginatedUsers(w http.ResponseWriter, r *http.Req
 	json.NewEncoder(w).Encode(result)
 }
 
-// GetCommonFriends - GET /users/common-friends?user1=2&user2=3
 func (h *PaginationHandler) GetCommonFriends(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	
@@ -90,7 +77,6 @@ func (h *PaginationHandler) GetCommonFriends(w http.ResponseWriter, r *http.Requ
 	json.NewEncoder(w).Encode(friends)
 }
 
-// AddFriend - POST /users/add-friend {"user_id": 2, "friend_id": 3}
 func (h *PaginationHandler) AddFriend(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	

@@ -13,8 +13,6 @@ type UserRepository interface {
 	CreateUser(name, email, gender string, age int, birthDate time.Time) (int, error)
 	UpdateUser(id int, name, email, gender string, age int, birthDate time.Time) (int, error)
 	DeleteUser(id int) (int, error)
-	
-	// Новые методы
 	GetPaginatedUsers(page, pageSize int, filters map[string]interface{}, orderBy string) (*modules.PaginatedResponse, error)
 	GetCommonFriends(userID1, userID2 int) ([]modules.User, error)
 	AddFriend(userID, friendID int) error
