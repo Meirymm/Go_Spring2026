@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 module practice7
 
 go 1.25.6
@@ -46,3 +47,8 @@ require (
 	gorm.io/driver/postgres v1.6.0 // indirect
 	gorm.io/gorm v1.31.1 // indirect
 )
+=======
+module assignment5
+
+go 1.25.6
+>>>>>>> 4f6d6444df9741af0fa6936323f56c5c84012043
